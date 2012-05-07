@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Setaudit by shadowbq</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/shadowbq/setaudit">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/shadowbq/setaudit/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/shadowbq/setaudit/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Setaudit</h1>
+          <p>setaudit a BSD libbsm audit context setting tool</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/shadowbq">shadowbq</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>setaudit</h1>
+
+<p>setaudit a BSD libbsm audit context setting tool</p>
+
+<h3>Compile:</h3>
+
+<div class="highlight">
+<pre>git clone http://github.com/shadowbq/setaudit.git
+<span class="nb">cd </span>setaudit
+gmake
+sudo gmake install
+</pre>
+</div>
+
+
+<h3>Usage:</h3>
+
+<div class="highlight">
+<pre><span class="nv">$ </span>/usr/local/sbin/setaudit 
+usage: ./setaudit <span class="o">[</span>-a auid<span class="o">]</span> <span class="o">[</span>-m mask<span class="o">]</span> <span class="o">[</span>-s <span class="nb">source</span><span class="o">]</span> <span class="o">[</span>-p port<span class="o">]</span> comand ...
+</pre>
+</div>
+
+
+<h3>Example Usage:</h3>
+
+<div class="highlight">
+<pre>setaudit -a www -m ex /usr/local/etc/rc.d/apache22 restart
+</pre>
+</div>
+
+
+<h3>Notes:</h3>
+
+<p>OpenBSM <a href="http://en.wikipedia.org/wiki/OpenBSM">http://en.wikipedia.org/wiki/OpenBSM</a></p>
+
+<p>Based on <a href="http://www.opensource.apple.com/source/bsm/">http://www.opensource.apple.com/source/bsm/</a></p>
+
+<h3>Real Life:</h3>
+
+<p>Audit Configuration (Note: setaudit does not correctly read in /etc/security/audit_ configs)</p>
+
+<div class="highlight">
+<pre><span class="c">#BSM audit_user config</span>
+www:all:no
+</pre>
+</div>
+
+
+<p>Clear the file location <code>/tmp/foo</code></p>
+
+<div class="highlight">
+<pre><span class="o">[</span>root@machine ~<span class="o">]</span><span class="c"># rm /tmp/foo </span>
+</pre>
+</div>
+
+
+<p>Sudoing as www user and touch the file <code>/tmp/foo</code> show no audit log</p>
+
+<div class="highlight">
+<pre><span class="o">[</span>root@machine ~<span class="o">]</span><span class="c"># sudo -u www touch /tmp/foo</span>
+<span class="o">[</span>root@machine ~<span class="o">]</span><span class="c"># auditreduce -u www -o file=/tmp/foo /var/audit/current |praudit</span>
+<span class="o">[</span>root@machine ~<span class="o">]</span><span class="c"># </span>
+</pre>
+</div>
+
+
+<p>Clear the file location <code>/tmp/foo</code> &amp; audit log</p>
+
+<div class="highlight">
+<pre><span class="o">[</span>root@machine ~<span class="o">]</span><span class="c"># rm /tmp/foo </span>
+<span class="o">[</span>root@machine ~<span class="o">]</span><span class="c"># audit -n</span>
+</pre>
+</div>
+
+
+<p>Setaudit and Sudo as www user and touch the file <code>/tmp/foo</code> shows correct www audit log</p>
+
+<div class="highlight">
+<pre><span class="o">[</span>root@machine ~<span class="o">]</span><span class="c"># setaudit -a www -m all sudo -u www touch /tmp/foo</span>
+<span class="o">[</span>root@machine ~<span class="o">]</span><span class="c"># auditreduce -u www -o file=/tmp/foo /var/audit/current |praudit</span>
+header,97,11,stat<span class="o">(</span>2<span class="o">)</span>,0,Mon May  7 11:31:05 2012, + 321 msec
+path,/tmp/foo
+subject,www,www,www,www,www,1713,0,0,0.0.0.0
+<span class="k">return</span>,failure : No such file or directory,4294967295
+trailer,97
+header,124,11,open<span class="o">(</span>2<span class="o">)</span> - write,creat,0,Mon May  7 11:31:05 2012, + 321 msec
+argument,3,0x1b6,mode
+argument,2,0x201,flags
+path,/tmp/foo
+subject,www,www,www,www,www,1713,0,0,0.0.0.0
+<span class="k">return</span>,success,3
+trailer,124
+
+</pre>
+</div>
+
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+    
+  </body>
+</html>
