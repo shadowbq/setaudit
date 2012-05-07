@@ -24,3 +24,9 @@ Example Usage:
 ```bash
 setaudit -a www -m ex /usr/local/etc/rc.d/apache22 restart
 ```
+
+Notes:
+
+OpenBSM http://en.wikipedia.org/wiki/OpenBSM
+
+Based on http://www.opensource.apple.com/source/bsm/
