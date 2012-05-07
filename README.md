@@ -33,11 +33,11 @@ Based on http://www.opensource.apple.com/source/bsm/
 
 ###Real Life:###
 
-Audit Configuration
+Audit Configuration (Note: setaudit does not correctly read in /etc/security/audit_ configs)
 
 ```bash
 #BSM audit_user config
-www:fc,fd,fr,fw,ex:no
+www:all:no
 ```
 
 Clear the file location `/tmp/foo`
