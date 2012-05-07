@@ -5,7 +5,7 @@ setaudit a BSD libbsm audit context setting tool
 
 ###Compile:###
 
-```bash
+```shell
 git clone http://github.com/shadowbq/setaudit.git
 cd setaudit
 gmake
@@ -14,14 +14,14 @@ sudo gmake install
 
 ###Usage:###
 
-```bash
+```shell
 $ /usr/local/sbin/setaudit 
 usage: ./setaudit [-a auid] [-m mask] [-s source] [-p port] comand ...
 ```
 
 ###Example Usage:###
 
-```bash
+```shell
 setaudit -a www -m ex /usr/local/etc/rc.d/apache22 restart
 ```
 
@@ -35,19 +35,19 @@ Based on http://www.opensource.apple.com/source/bsm/
 
 Audit Configuration (Note: setaudit does not correctly read in /etc/security/audit_ configs)
 
-```bash
+```shell
 #BSM audit_user config
 www:all:no
 ```
 
 Clear the file location `/tmp/foo`
 
-```bash
+```shell
 [root@machine ~]# rm /tmp/foo 
 ```
 
 Sudoing as www user and touch the file `/tmp/foo` show no audit log
-```bash
+```shell
 [root@machine ~]# sudo -u www touch /tmp/foo
 [root@machine ~]# auditreduce -u www -o file=/tmp/foo /var/audit/current |praudit
 [root@machine ~]# 
@@ -55,12 +55,12 @@ Sudoing as www user and touch the file `/tmp/foo` show no audit log
 
 Clear the file location `/tmp/foo` & audit log
 
-```bash
+```shell
 [root@machine ~]# rm /tmp/foo 
 [root@machine ~]# audit -n
 ```
 Setaudit and Sudo as www user and touch the file `/tmp/foo` shows correct www audit log
-```bash
+```shell
 [root@machine ~]# setaudit -a www -m all sudo -u www touch /tmp/foo
 [root@machine ~]# auditreduce -u www -o file=/tmp/foo /var/audit/current |praudit
 header,97,11,stat(2),0,Mon May  7 11:31:05 2012, + 321 msec
