@@ -33,23 +33,47 @@ Based on http://www.opensource.apple.com/source/bsm/
 
 ###Real Life:###
 
+Audit Configuration
+
 ```bash
+#BSM audit_user config
+www:fc,fd,fr,fw,ex:no
+```
 
-[root@machine ~]# setaudit -a www -m all touch /tmp/foo
+Clear the file location `/tmp/foo`
 
+```bash
+[root@machine ~]# rm /tmp/foo 
+```
+
+Sudoing as www user and touch the file `/tmp/foo` show no audit log
+```bash
+[root@machine ~]# sudo -u www touch /tmp/foo
 [root@machine ~]# auditreduce -u www -o file=/tmp/foo /var/audit/current |praudit
+[root@machine ~]# 
+```
 
-header,126,11,stat(2),0,Mon May  7 11:22:55 2012, + 308 msec
+Clear the file location `/tmp/foo` & audit log
+
+```bash
+[root@machine ~]# rm /tmp/foo 
+[root@machine ~]# audit -n
+```
+Setaudit and Sudo as www user and touch the file `/tmp/foo` shows correct www audit log
+```bash
+[root@machine ~]# setaudit -a www -m all sudo -u www touch /tmp/foo
+[root@machine ~]# auditreduce -u www -o file=/tmp/foo /var/audit/current |praudit
+header,97,11,stat(2),0,Mon May  7 11:31:05 2012, + 321 msec
 path,/tmp/foo
-attribute,644,root,www,73,1089365,0
-subject,www,root,wheel,root,wheel,1683,0,0,0.0.0.0
-return,success,0
-trailer,126
-header,126,11,utimes(2),0,Mon May  7 11:22:55 2012, + 308 msec
+subject,www,www,www,www,www,1713,0,0,0.0.0.0
+return,failure : No such file or directory,4294967295
+trailer,97
+header,124,11,open(2) - write,creat,0,Mon May  7 11:31:05 2012, + 321 msec
+argument,3,0x1b6,mode
+argument,2,0x201,flags
 path,/tmp/foo
-attribute,644,root,www,73,1089365,0
-subject,www,root,wheel,root,wheel,1683,0,0,0.0.0.0
-return,success,0
-trailer,126
+subject,www,www,www,www,www,1713,0,0,0.0.0.0
+return,success,3
+trailer,124
 
 ```
