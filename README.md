@@ -31,6 +31,9 @@ OpenBSM http://en.wikipedia.org/wiki/OpenBSM
 
 Based on http://www.opensource.apple.com/source/bsm/
 
+This has only been tested on the following BSD versions, but should work on all BSD systems with libbsm installed.
+- FreeBSD 9.0
+
 ###Real Life:###
 
 Audit Configuration (Note: setaudit does not correctly read in /etc/security/audit_ configs)
